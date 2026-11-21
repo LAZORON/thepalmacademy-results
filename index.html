@@ -514,27 +514,36 @@ function logout() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 </script>
-
-<script>
+   <script>
 // Fills the Student ID and Access Code from the link: #id=...&code=...
 // It only fills the boxes. The parent presses VIEW MY RESULTS.
 (function () {
-  var h = location.hash.replace(/^#/, '');
-  if (!h) return;
-  var p = new URLSearchParams(h);
-  var idVal = p.get('id');
-  var codeVal = p.get('code');
-  if (!idVal || !codeVal) return;
+  function fillFromLink() {
+    var h = location.hash.replace(/^#/, '');
+    if (!h) return;
+    var p = new URLSearchParams(h);
+    var idVal = p.get('id');
+    var codeVal = p.get('code');
+    if (!idVal || !codeVal) return;
 
-  document.getElementById('studentIdInput').value = idVal;
-  document.getElementById('accessCodeInput').value = codeVal;
+    var idBox = document.getElementById('studentIdInput');
+    var codeBox = document.getElementById('accessCodeInput');
+    if (!idBox || !codeBox) return;
 
-  // remove the ID and code from the address bar
-  history.replaceState(null, '', location.pathname + location.search);
+    idBox.value = idVal;
+    codeBox.value = codeVal;
 
-  // put the cursor on the button so the parent can just press Enter or tap it
-  var btn = document.querySelector('.login-btn');
-  if (btn) btn.focus();
+    // remove the ID and code from the address bar
+    history.replaceState(null, '', location.pathname + location.search);
+
+    // put the cursor on the button so the parent can just tap or press Enter
+    var btn = document.querySelector('.login-btn');
+    if (btn) btn.focus();
+  }
+
+  fillFromLink();
+  window.addEventListener('hashchange', fillFromLink);
+  window.addEventListener('pageshow', fillFromLink);
 })();
 </script>
 </body>
